@@ -8,10 +8,9 @@ export default function ResetPasswordPage() {
       <Card className="z-1 w-full gap-6 py-6 sm:max-w-md">
         <CardHeader className="gap-6 px-6">
           <div>
-            <CardTitle className="mb-2 text-2xl font-semibold">Reset Password</CardTitle>
+            <CardTitle className="mb-2 text-2xl font-semibold">Change Password</CardTitle>
             <CardDescription className="text-base">
-              Please enter your current password and choose a new password to update your account
-              security.
+              Enter your current password and choose a new password to update your account security.
             </CardDescription>
           </div>
         </CardHeader>

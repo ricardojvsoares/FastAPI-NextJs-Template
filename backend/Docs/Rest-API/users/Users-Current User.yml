@@ -1,0 +1,70 @@
+info:
+  name: Users:Current User
+  type: http
+  seq: 1
+  tags:
+    - users
+
+http:
+  method: GET
+  url: "{{baseUrl}}/users/me"
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NTI5ZWZlNS05NWE4LTQ5ZDgtYTI1MS02YzcyZmUxYjQzODciLCJhdWQiOlsiZmFzdGFwaS11c2VyczphdXRoIl0sImV4cCI6MTc4NTg4NzkxN30.Zb8xBearer B6mH3ZtpRbtIQveJqjO3rrsrWrqGVCnmXm74pXc
+  auth:
+    type: oauth2
+    flow: resource_owner_password_credentials
+    accessTokenUrl: auth/jwt/login
+    refreshTokenUrl: "{{oauth_refresh_url}}"
+    credentials:
+      clientId: "{{oauth_client_id}}"
+      clientSecret: "{{oauth_client_secret}}"
+      placement: header
+    tokenConfig:
+      placement:
+        header: Bearer
+      source: access_token
+    settings:
+      autoFetchToken: false
+      autoRefreshToken: true
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Successful Response
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "",
+            "email": "",
+            "is_active": false,
+            "is_superuser": false,
+            "is_verified": false,
+            "name": ""
+          }
+  - name: 401 Response
+    description: Missing token or inactive user.
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: GET
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""

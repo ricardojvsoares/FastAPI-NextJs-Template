@@ -1,6 +1,6 @@
 'use client';
 
-import { APP_NAME } from '@/lib/conts';
+import { APP_NAME } from '@/lib/const';
 import SignupForm from './_components/signup-form';
 import { GalleryVerticalEndIcon } from 'lucide-react';
 import Image from 'next/image';

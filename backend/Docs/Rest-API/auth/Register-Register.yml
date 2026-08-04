@@ -1,0 +1,156 @@
+info:
+  name: Register:Register
+  type: http
+  seq: 3
+  tags:
+    - auth
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "",
+        "password": "",
+        "is_active": "",
+        "is_superuser": "",
+        "is_verified": "",
+        "name": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Successful Response
+    request:
+      url: "{{baseUrl}}/auth/register"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "",
+            "email": "",
+            "is_active": false,
+            "is_superuser": false,
+            "is_verified": false,
+            "name": ""
+          }
+  - name: A user with this email already exists.
+    request:
+      url: "{{baseUrl}}/auth/register"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": "REGISTER_USER_ALREADY_EXISTS"
+          }
+  - name: Password validation failed.
+    request:
+      url: "{{baseUrl}}/auth/register"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": {
+              "code": "REGISTER_INVALID_PASSWORD",
+              "reason": "Password should beat least 3 characters"
+            }
+          }
+  - name: 422 Response
+    description: Validation Error
+    request:
+      url: "{{baseUrl}}/auth/register"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": [
+              {
+                "loc": [],
+                "msg": "",
+                "type": "",
+                "input": "",
+                "ctx": {}
+              }
+            ]
+          }

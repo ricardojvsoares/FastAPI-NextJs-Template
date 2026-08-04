@@ -2,7 +2,7 @@
 
 import LoginForm from './_components/login-form';
 import { GalleryVerticalEndIcon } from 'lucide-react';
-import { APP_NAME } from '@/lib/conts';
+import { APP_NAME } from '@/lib/const';
 import Image from 'next/image';
 
 export default function LoginPage() {

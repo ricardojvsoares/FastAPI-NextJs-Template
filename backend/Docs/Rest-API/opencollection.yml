@@ -1,0 +1,33 @@
+opencollection: 1.0.0
+
+info:
+  name: Template
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8000
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
+    openapi:
+      - sourceUrl: http://localhost:8000/openapi.json
+        groupBy: tags
+        lastSyncDate: 2026-08-04T22:57:10.221Z
+        specHash: de05a2f88abcc8d1bdd792fc9c440bd2
+        autoCheck: true
+        autoCheckInterval: 5

@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,14 +13,53 @@ import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ApiError } from '@/lib/api';
+import { login, register } from '@/lib/api/auth';
 
 export default function SignupForm({ className, ...props }: React.ComponentProps<'form'>) {
+  const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get('name') ?? '');
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+    const confirmPassword = String(formData.get('confirm-password') ?? '');
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await register(name, email, password);
+      await login(email, password);
+      router.push('/');
+      router.refresh();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message || 'Unable to create account');
+      } else {
+        setError('Unable to create account. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
-    <form className={cn('flex flex-col gap-6', className)} {...props}>
+    <form className={cn('flex flex-col gap-6', className)} onSubmit={handleSubmit} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -28,15 +69,25 @@ export default function SignupForm({ className, ...props }: React.ComponentProps
         </div>
         <Field>
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input id="name" type="text" placeholder="John Doe" required className="bg-background" />
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="John Doe"
+            required
+            autoComplete="name"
+            className="bg-background"
+          />
         </Field>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="m@example.com"
             required
+            autoComplete="email"
             className="bg-background"
           />
         </Field>
@@ -45,11 +96,16 @@ export default function SignupForm({ className, ...props }: React.ComponentProps
           <InputGroup>
             <InputGroupInput
               id="password"
+              name="password"
               type={isPasswordVisible ? 'text' : 'password'}
               placeholder="••••••••••••••••"
+              required
+              minLength={8}
+              autoComplete="new-password"
             />
             <InputGroupAddon align="inline-end" className="pr-1.5">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className="text-muted-foreground rounded-l-none hover:bg-transparent"
@@ -68,11 +124,16 @@ export default function SignupForm({ className, ...props }: React.ComponentProps
           <InputGroup>
             <InputGroupInput
               id="confirm-password"
+              name="confirm-password"
               type={isConfirmPasswordVisible ? 'text' : 'password'}
               placeholder="••••••••••••••••"
+              required
+              minLength={8}
+              autoComplete="new-password"
             />
             <InputGroupAddon align="inline-end" className="pr-1.5">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsConfirmPasswordVisible((prevState) => !prevState)}
@@ -86,8 +147,11 @@ export default function SignupForm({ className, ...props }: React.ComponentProps
             </InputGroupAddon>
           </InputGroup>
         </Field>
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Field>
-          <Button type="submit">Create Account</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Creating account…' : 'Create Account'}
+          </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>

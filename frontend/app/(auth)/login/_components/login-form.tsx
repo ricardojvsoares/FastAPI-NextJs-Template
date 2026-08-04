@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,13 +12,43 @@ import {
 import Link from 'next/link';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ApiError } from '@/lib/api';
+import { login } from '@/lib/api/auth';
 
 export default function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
+  const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(event: ChangeEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+
+    try {
+      await login(email, password);
+      router.push('/');
+      router.refresh();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message || 'Invalid email or password');
+      } else {
+        setError('Unable to login. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
-    <form className={cn('flex flex-col gap-6', className)} {...props}>
+    <form className={cn('flex flex-col gap-6', className)} onSubmit={handleSubmit} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -27,7 +59,14 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <InputGroup>
-            <InputGroupInput id="email" type="email" placeholder="m@example.com" required />
+            <InputGroupInput
+              id="email"
+              name="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+              autoComplete="email"
+            />
           </InputGroup>
         </Field>
         <Field>
@@ -35,11 +74,15 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
           <InputGroup>
             <InputGroupInput
               id="password"
+              name="password"
               type={isPasswordVisible ? 'text' : 'password'}
               placeholder="••••••••••••••••"
+              required
+              autoComplete="current-password"
             />
             <InputGroupAddon align="inline-end" className="pr-1.5">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className="text-muted-foreground rounded-l-none hover:bg-transparent"
@@ -53,11 +96,11 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
             </InputGroupAddon>
           </InputGroup>
         </Field>
-        <Link href="/reset-password" className="ml-auto text-sm underline-offset-4 hover:underline">
-          Forgot your password?
-        </Link>
+        {error ? <p className="text-destructive text-sm">{error}</p> : null}
         <Field>
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Logging in…' : 'Login'}
+          </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>

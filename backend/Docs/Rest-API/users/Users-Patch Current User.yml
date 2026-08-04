@@ -1,0 +1,193 @@
+info:
+  name: Users:Patch Current User
+  type: http
+  seq: 2
+  tags:
+    - users
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/users/me"
+  body:
+    type: json
+    data: |-
+      {
+        "password": "",
+        "email": "",
+        "is_active": "",
+        "is_superuser": "",
+        "is_verified": "",
+        "name": ""
+      }
+  auth:
+    type: oauth2
+    flow: resource_owner_password_credentials
+    accessTokenUrl: auth/jwt/login
+    refreshTokenUrl: "{{oauth_refresh_url}}"
+    credentials:
+      clientId: "{{oauth_client_id}}"
+      clientSecret: "{{oauth_client_secret}}"
+      placement: header
+    tokenConfig:
+      placement:
+        header: Bearer
+      source: access_token
+    settings:
+      autoFetchToken: false
+      autoRefreshToken: true
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Successful Response
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "password": "",
+            "email": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "",
+            "email": "",
+            "is_active": false,
+            "is_superuser": false,
+            "is_verified": false,
+            "name": ""
+          }
+  - name: A user with this email already exists.
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "password": "",
+            "email": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": "UPDATE_USER_EMAIL_ALREADY_EXISTS"
+          }
+  - name: Password validation failed.
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "password": "",
+            "email": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": {
+              "code": "UPDATE_USER_INVALID_PASSWORD",
+              "reason": "Password should beat least 3 characters"
+            }
+          }
+  - name: 401 Response
+    description: Missing token or inactive user.
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "password": "",
+            "email": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: text
+        data: ""
+  - name: 422 Response
+    description: Validation Error
+    request:
+      url: "{{baseUrl}}/users/me"
+      method: PATCH
+      body:
+        type: json
+        data: |-
+          {
+            "password": "",
+            "email": "",
+            "is_active": "",
+            "is_superuser": "",
+            "is_verified": "",
+            "name": ""
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "detail": [
+              {
+                "loc": [],
+                "msg": "",
+                "type": "",
+                "input": "",
+                "ctx": {}
+              }
+            ]
+          }

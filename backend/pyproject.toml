@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.18.5",
     "asyncpg>=0.31.0",
     "fastapi>=0.141.1",
+    "fastapi-users[sqlalchemy]>=15.0.5",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.2",
     "python-dotenv>=1.2.2",
@@ -22,3 +23,6 @@ dev = [
     "pytest-asyncio>=1.4.0",
     "ruff>=0.16.1",
 ]
+
+[tool.ruff.lint]
+ignore = ["B008"]

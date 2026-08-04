@@ -24,10 +24,11 @@ For a local uvicorn process (API on the host), set `POSTGRES_HOST=localhost` in 
 uv sync
 ```
 
-3. Start Postgres, then the API with reload:
+3. Start Postgres, run migrations, then the API with reload:
 
 ```bash
 docker compose up db -d
+uv run python -m alembic upgrade head
 uv run uvicorn src.main:app --reload
 ```
 
