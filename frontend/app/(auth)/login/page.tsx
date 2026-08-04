@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import LoginForm from "./_components/login-form"
-import { GalleryVerticalEndIcon } from "lucide-react"
+import LoginForm from './_components/login-form';
+import { GalleryVerticalEndIcon } from 'lucide-react';
 
 export default function LoginPage() {
   return (
@@ -29,5 +29,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }

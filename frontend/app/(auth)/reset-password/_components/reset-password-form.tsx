@@ -1,92 +1,84 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field'
-import { EyeOffIcon, EyeIcon } from "lucide-react"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group';
+import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { EyeOffIcon, EyeIcon } from 'lucide-react';
 
 export default function ResetPasswordForm() {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   return (
-    <form onSubmit={e => e.preventDefault()}>
-      <FieldGroup className='gap-4'>
+    <form onSubmit={(e) => e.preventDefault()}>
+      <FieldGroup className="gap-4">
         <Field>
-          <FieldLabel className='leading-5' htmlFor='userEmail'>
+          <FieldLabel className="leading-5" htmlFor="userEmail">
             Email Address*
           </FieldLabel>
-          <Input type='email' id='userEmail' placeholder='Enter your email address' />
+          <Input type="email" id="userEmail" placeholder="Enter your email address" />
         </Field>
 
         <Field>
-          <FieldLabel className='leading-5' htmlFor='password'>
+          <FieldLabel className="leading-5" htmlFor="password">
             New Password*
           </FieldLabel>
           <InputGroup>
             <InputGroupInput
-              id='password'
+              id="password"
               type={isPasswordVisible ? 'text' : 'password'}
-              placeholder='••••••••••••••••'
+              placeholder="••••••••••••••••"
             />
-            <InputGroupAddon align='inline-end' className='pr-1.5'>
+            <InputGroupAddon align="inline-end" className="pr-1.5">
               <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => setIsPasswordVisible(prevState => !prevState)}
-                className='text-muted-foreground rounded-l-none hover:bg-transparent'
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsPasswordVisible((prevState) => !prevState)}
+                className="text-muted-foreground rounded-l-none hover:bg-transparent"
               >
-                {isPasswordVisible ? (
-                  <EyeOffIcon
-                  />
-                ) : (
-                  <EyeIcon
-                  />
-                )}
-                <span className='sr-only'>{isPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                <span className="sr-only">
+                  {isPasswordVisible ? 'Hide password' : 'Show password'}
+                </span>
               </Button>
             </InputGroupAddon>
           </InputGroup>
         </Field>
 
         <Field>
-          <FieldLabel className='leading-5' htmlFor='confirmPassword'>
+          <FieldLabel className="leading-5" htmlFor="confirmPassword">
             Confirm Password*
           </FieldLabel>
           <InputGroup>
             <InputGroupInput
-              id='confirmPassword'
+              id="confirmPassword"
               type={isConfirmPasswordVisible ? 'text' : 'password'}
-              placeholder='••••••••••••••••'
+              placeholder="••••••••••••••••"
             />
-            <InputGroupAddon align='inline-end' className='pr-1.5'>
+            <InputGroupAddon align="inline-end" className="pr-1.5">
               <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => setIsConfirmPasswordVisible(prevState => !prevState)}
-                className='text-muted-foreground rounded-l-none hover:bg-transparent'
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsConfirmPasswordVisible((prevState) => !prevState)}
+                className="text-muted-foreground rounded-l-none hover:bg-transparent"
               >
-                {isConfirmPasswordVisible ? (
-                  <EyeOffIcon
-                  />
-                ) : (
-                  <EyeIcon
-                  />
-                )}
-                <span className='sr-only'>{isConfirmPasswordVisible ? 'Hide password' : 'Show password'}</span>
+                {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                <span className="sr-only">
+                  {isConfirmPasswordVisible ? 'Hide password' : 'Show password'}
+                </span>
               </Button>
             </InputGroupAddon>
           </InputGroup>
         </Field>
 
         <Field>
-          <Button className='w-full' type='submit'>
+          <Button className="w-full" type="submit">
             Set New Password
           </Button>
         </Field>
       </FieldGroup>
     </form>
-  )
+  );
 }
