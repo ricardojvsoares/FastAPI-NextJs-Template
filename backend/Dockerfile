@@ -1,18 +1,23 @@
-FROM python:3.14-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
+FROM python:3.14-slim AS base
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_LINK_MODE=copy
 WORKDIR /app
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-RUN pip install --no-cache-dir uv
-
+FROM base AS dev
 COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+COPY . .
+CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
+FROM base AS build
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+COPY . .
 RUN uv sync --frozen --no-dev
 
-COPY . .
-
+FROM base AS prod
+COPY --from=build /app /app
 EXPOSE 8000
-
 CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
