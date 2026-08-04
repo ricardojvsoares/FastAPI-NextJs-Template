@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
 import ResetPasswordForm from '@/app/(auth)/reset-password/_components/reset-password-form';
+import Link from 'next/link';
 
 export default function ResetPasswordPage() {
   return (
@@ -20,15 +21,9 @@ export default function ResetPasswordPage() {
         <CardContent className="space-y-4 px-6">
           <ResetPasswordForm />
 
-          <Button
-            variant="ghost"
-            className="group w-full"
-            render={<a href="#" />}
-            nativeButton={false}
-          >
-            <ChevronLeftIcon className="size-5 transition-transform duration-200 group-hover:-translate-x-0.5" />
+          <Link href="/login" className="block text-center text-sm text-muted-foreground underline underline-offset-4">
             Back to login
-          </Button>
+          </Link>
         </CardContent>
       </Card>
     </div>
